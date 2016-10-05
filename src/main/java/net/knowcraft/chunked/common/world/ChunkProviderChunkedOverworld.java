@@ -1,11 +1,14 @@
 package net.knowcraft.chunked.common.world;
 
+import net.knowcraft.chunked.helper.LogHelper;
 import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -59,6 +62,9 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     double[] minLimitRegion;
     double[] maxLimitRegion;
     double[] depthRegion;
+
+    // Für die Becher-Methode
+    static final PropertyEnum<EnumDyeColor> DYE_COLOR_PROPERTY_ENUM = PropertyEnum.create("color", EnumDyeColor.class);
 
     public ChunkProviderChunkedOverworld(World worldIn, long seed, boolean mapFeaturesEnabledIn, String p_i46668_5_)
     {
@@ -204,24 +210,76 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
 
         for(int i = 0; i < 2; ++i)
         {
-            for (int j = 0; j < 16; ++j) {
+            for (int j = 0; j < 16; ++j)
+            {
 
                 // y soll für die Höhe stehen (200 noch anpassen?)
-                for (int y = 0; y < 200; ++y) {
+                for (int y = 0; y < 200; ++y)
+                {
                     IBlockState iblockstate = primer.getBlockState(15*i, y, j);
-                    if (iblockstate.getMaterial() != Material.AIR && iblockstate.getBlock() != Blocks.BEDROCK){primer.setBlockState(15*i, y, j, Blocks.HARDENED_CLAY.getDefaultState());}
+                    if (iblockstate.getMaterial() != Material.AIR)
+                    {
+                        if (iblockstate.getBlock() == Blocks.GRASS){
+                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.GREEN));
+                        } else if (iblockstate.getBlock() == Blocks.MYCELIUM) {
+                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.PURPLE));
+                        } else if (iblockstate.getBlock() == Blocks.DIRT) {
+                            primer.setBlockState(15*i, y, j, Blocks.HARDENED_CLAY.getDefaultState());
+                        } else if (iblockstate.getBlock() == Blocks.SAND || iblockstate.getBlock() == Blocks.SANDSTONE || iblockstate.getBlock() == Blocks.GRASS_PATH) {
+                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.YELLOW));
+                        } else if (iblockstate.getBlock() == Blocks.WATER || iblockstate.getBlock() == Blocks.FLOWING_WATER) {
+                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));
+                        } else if (iblockstate.getBlock() == Blocks.LAVA || iblockstate.getBlock() == Blocks.FLOWING_LAVA) {
+                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.RED));
+                        } else {
+                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
+                        }
+                    }
+
+                    // Altes If-Argument ohne verschiedene Farben.
+                    /*
+                    if (iblockstate.getMaterial() != Material.AIR && iblockstate.getBlock() != Blocks.BEDROCK){primer.setBlockState(15*i, y, j,
+                            Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));}
+                    */
+
                 }
             }
         }
 
         for(int i = 1; i < 15; ++i)
         {
-            for (int j = 0; j < 2; ++j) {
+            for (int j = 0; j < 2; ++j)
+            {
 
                 // y soll für die Höhe stehen (200 noch anpassen?)
-                for (int y = 0; y < 200; ++y) {
+                for (int y = 0; y < 200; ++y)
+                {
                     IBlockState iblockstate = primer.getBlockState(i, y, 15*j);
-                    if (iblockstate.getMaterial() != Material.AIR && iblockstate.getBlock() != Blocks.BEDROCK){primer.setBlockState(i, y, 15*j, Blocks.HARDENED_CLAY.getDefaultState());}
+
+                    if (iblockstate.getMaterial() != Material.AIR)
+                    {
+                        if (iblockstate.getBlock() == Blocks.GRASS){
+                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.GREEN));
+                        } else if (iblockstate.getBlock() == Blocks.MYCELIUM) {
+                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.PURPLE));
+                        } else if (iblockstate.getBlock() == Blocks.DIRT) {
+                            primer.setBlockState(i, y, 15*j, Blocks.HARDENED_CLAY.getDefaultState());
+                        } else if (iblockstate.getBlock() == Blocks.SAND || iblockstate.getBlock() == Blocks.SANDSTONE || iblockstate.getBlock() == Blocks.GRASS_PATH) {
+                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.YELLOW));
+                        } else if (iblockstate.getBlock() == Blocks.WATER || iblockstate.getBlock() == Blocks.FLOWING_WATER) {
+                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));
+                        } else if (iblockstate.getBlock() == Blocks.LAVA || iblockstate.getBlock() == Blocks.FLOWING_LAVA) {
+                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.RED));
+                        } else {
+                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
+                        }
+                    }
+
+                    // Altes If-Argument ohne verschiedene Farben.
+                    /*
+                    if (iblockstate.getMaterial() != Material.AIR && iblockstate.getBlock() != Blocks.BEDROCK){primer.setBlockState(15*i, y, j,
+                            Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));}
+                    */
                 }
             }
         }
