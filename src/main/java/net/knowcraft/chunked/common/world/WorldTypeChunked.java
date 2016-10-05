@@ -5,7 +5,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.gen.ChunkProviderFlat;
+import net.minecraft.world.gen.ChunkProviderOverworld;
 
 import javax.annotation.Nonnull;
 
@@ -47,6 +47,9 @@ public class WorldTypeChunked extends WorldType{
     @Nonnull
     @Override
     public IChunkGenerator getChunkGenerator(@Nonnull World world, String generatorOptions) {
-        return new ChunkProviderFlat(world, world.getSeed(), false, "3;minecraft:air;");
+
+        // Muss noch herausfinden, wofür der String (hier "") steht.
+        // In einer flatword kann es z.B. "3;minecraft:air;" sein.
+        return new ChunkProviderChunkedOverworld(world, world.getSeed(), false, "");
     }
 }
