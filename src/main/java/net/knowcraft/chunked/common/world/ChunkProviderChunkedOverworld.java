@@ -25,6 +25,7 @@ import net.minecraft.world.gen.feature.WorldGenLakes;
 import net.minecraft.world.gen.structure.*;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -65,6 +66,9 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
 
     // Für die Becher-Methode
     static final PropertyEnum<EnumDyeColor> DYE_COLOR_PROPERTY_ENUM = PropertyEnum.create("color", EnumDyeColor.class);
+
+    // Zum Test ein Array mit Chunks, die normal generiert werden. Alle anderen Chunks werden leer sein.
+    private final int[][] AllowedChunks = {{0,0},{-2,2},{2,2},{-3,-1},{3,-2},{-2,-4},{4,-1},{1,5},{-4,5},{-3,-5},{5,3},{-3,6},{-6,2},{-6,-3},{2,-6},{6,-4},{3,7},{7,0}};
 
     public ChunkProviderChunkedOverworld(World worldIn, long seed, boolean mapFeaturesEnabledIn, String p_i46668_5_)
     {
@@ -289,67 +293,130 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     {
         this.rand.setSeed((long)x * 341873128712L + (long)z * 132897987541L);
         ChunkPrimer chunkprimer = new ChunkPrimer();
+        int[] chunkCoord = {x, z};
+        boolean isAllowedChunk = false;
 
-
-        // Diese Methode überarbeiten, damit viele Chunks keine Blöcke haben?
-        this.setBlocksInChunk(x, z, chunkprimer);
-
-
-
-        this.biomesForGeneration = this.worldObj.getBiomeProvider().loadBlockGeneratorData(this.biomesForGeneration, x * 16, z * 16, 16, 16);
-        this.replaceBiomeBlocks(x, z, chunkprimer, this.biomesForGeneration);
-
-        if (this.settings.useCaves)
+        for(int[] entry : AllowedChunks)
         {
-            this.caveGenerator.generate(this.worldObj, x, z, chunkprimer);
+            if(Arrays.equals(entry, chunkCoord)) {isAllowedChunk = true;}
         }
 
-        if (this.settings.useRavines)
-        {
-            this.ravineGenerator.generate(this.worldObj, x, z, chunkprimer);
+        LogHelper.error("Die Koords: "+Arrays.toString(chunkCoord)+". Sind im Array: "+Arrays.asList(AllowedChunks).contains(chunkCoord));
+
+
+        if (isAllowedChunk) {
+            // Alles ab hier in der Methode nur Aufrufen, wenn der Chunk wie eine normale Overworld generiert werden soll.
+            this.setBlocksInChunk(x, z, chunkprimer);
+
+            this.biomesForGeneration = this.worldObj.getBiomeProvider().loadBlockGeneratorData(this.biomesForGeneration, x * 16, z * 16, 16, 16);
+            this.replaceBiomeBlocks(x, z, chunkprimer, this.biomesForGeneration);
+
+            if (this.settings.useCaves)
+            {
+                this.caveGenerator.generate(this.worldObj, x, z, chunkprimer);
+            }
+
+            if (this.settings.useRavines)
+            {
+                this.ravineGenerator.generate(this.worldObj, x, z, chunkprimer);
+            }
+
+            if (this.mapFeaturesEnabled)
+            {
+                if (this.settings.useMineShafts)
+                {
+                    this.mineshaftGenerator.generate(this.worldObj, x, z, chunkprimer);
+                }
+
+                if (this.settings.useVillages)
+                {
+                    this.villageGenerator.generate(this.worldObj, x, z, chunkprimer);
+                }
+
+                if (this.settings.useStrongholds)
+                {
+                    this.strongholdGenerator.generate(this.worldObj, x, z, chunkprimer);
+                }
+
+                if (this.settings.useTemples)
+                {
+                    this.scatteredFeatureGenerator.generate(this.worldObj, x, z, chunkprimer);
+                }
+
+                if (this.settings.useMonuments)
+                {
+                    this.oceanMonumentGenerator.generate(this.worldObj, x, z, chunkprimer);
+                }
+            }
+
+            // Hier wird die Becher-Methode aufgerufen.
+            this.replaceChunkBoarderBlocks(chunkprimer);
+
+            Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
+            byte[] abyte = chunk.getBiomeArray();
+
+            for (int i = 0; i < abyte.length; ++i)
+            {
+                abyte[i] = (byte)Biome.getIdForBiome(this.biomesForGeneration[i]);
+            }
+
+            chunk.generateSkylightMap();
+            return chunk;
+        } else {
+
+            // Das hier wird für alle anderen (Void-Chunks) aufgerufen.
+            for (int i = 0; i < 256; ++i)
+            {
+                IBlockState iblockstate = Blocks.AIR.getDefaultState();
+
+                if (iblockstate != null)
+                {
+                    for (int j = 0; j < 16; ++j)
+                    {
+                        for (int k = 0; k < 16; ++k)
+                        {
+                            chunkprimer.setBlockState(j, i, k, iblockstate);
+                        }
+                    }
+                }
+            }
+
+
+            // Hier werden wohl Structures wie Mineshafts etc. generiert. (brauchen wir für den Void nicht)
+            /*
+            for (MapGenBase mapgenbase : this.structureGenerators)
+            {
+                mapgenbase.generate(this.worldObj, x, z, chunkprimer);
+            }
+            */
+
+            // Hier werden wohl die Biome für den jeweiligen Chunk geholt. Overworld-Style
+            Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
+            Biome[] abiome = this.worldObj.getBiomeProvider().loadBlockGeneratorData((Biome[])null, x * 16, z * 16, 16, 16);
+            byte[] abyte = chunk.getBiomeArray();
+
+            for (int l = 0; l < abyte.length; ++l)
+            {
+                abyte[l] = (byte)Biome.getIdForBiome(abiome[l]);
+            }
+
+            chunk.generateSkylightMap();
+            return chunk;
+
+            // Hier werden die Biome Flatworld-Style geholt.
+            /*
+            Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
+            byte[] abyte = chunk.getBiomeArray();
+
+            for (int i = 0; i < abyte.length; ++i)
+            {
+                abyte[i] = (byte)Biome.getIdForBiome(this.biomesForGeneration[i]);
+            }
+
+            chunk.generateSkylightMap();
+            return chunk;
+            */
         }
-
-        if (this.mapFeaturesEnabled)
-        {
-            if (this.settings.useMineShafts)
-            {
-                this.mineshaftGenerator.generate(this.worldObj, x, z, chunkprimer);
-            }
-
-            if (this.settings.useVillages)
-            {
-                this.villageGenerator.generate(this.worldObj, x, z, chunkprimer);
-            }
-
-            if (this.settings.useStrongholds)
-            {
-                this.strongholdGenerator.generate(this.worldObj, x, z, chunkprimer);
-            }
-
-            if (this.settings.useTemples)
-            {
-                this.scatteredFeatureGenerator.generate(this.worldObj, x, z, chunkprimer);
-            }
-
-            if (this.settings.useMonuments)
-            {
-                this.oceanMonumentGenerator.generate(this.worldObj, x, z, chunkprimer);
-            }
-        }
-
-        // Hier wird die Becher-Methode aufgerufen.
-        this.replaceChunkBoarderBlocks(chunkprimer);
-
-        Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
-        byte[] abyte = chunk.getBiomeArray();
-
-        for (int i = 0; i < abyte.length; ++i)
-        {
-            abyte[i] = (byte)Biome.getIdForBiome(this.biomesForGeneration[i]);
-        }
-
-        chunk.generateSkylightMap();
-        return chunk;
     }
 
     private void generateHeightmap(int p_185978_1_, int p_185978_2_, int p_185978_3_)

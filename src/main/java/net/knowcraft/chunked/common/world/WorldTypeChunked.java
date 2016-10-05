@@ -31,7 +31,7 @@ public class WorldTypeChunked extends WorldType{
 
     @Override
     public int getMinimumSpawnHeight(World world) {
-        return 74;
+        return 62;
     }
 
     @Override
