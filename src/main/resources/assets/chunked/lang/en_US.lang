@@ -1,3 +1,21 @@
 # World Gen
 generator.chunked=Chunked
 generator.chunked.info=§o"The world is indeed comic, but the joke is on mankind."§r  - H. P. Lovecraft
+
+tile.lighter_stained_hardened_clay.name=Lighter Stained Hardened Clay
+tile.lighter_stained_hardened_clay.white.name=Lighter White Stained Clay
+tile.lighter_stained_hardened_clay.orange.name=Lighter Orange Stained Clay
+tile.lighter_stained_hardened_clay.magenta.name=Lighter Magenta Stained Clay
+tile.lighter_stained_hardened_clay.lightBlue.name=Lighter Light Blue Stained Clay
+tile.lighter_stained_hardened_clay.yellow.name=Lighter Yellow Stained Clay
+tile.lighter_stained_hardened_clay.lime.name=Lighter Lime Stained Clay
+tile.lighter_stained_hardened_clay.pink.name=Lighter Pink Stained Clay
+tile.lighter_stained_hardened_clay.gray.name=Lighter Gray Stained Clay
+tile.lighter_stained_hardened_clay.silver.name=Lighter Light Gray Stained Clay
+tile.lighter_stained_hardened_clay.cyan.name=Lighter Cyan Stained Clay
+tile.lighter_stained_hardened_clay.purple.name=Lighter Purple Stained Clay
+tile.lighter_stained_hardened_clay.blue.name=Lighter Blue Stained Clay
+tile.lighter_stained_hardened_clay.brown.name=Lighter Brown Stained Clay
+tile.lighter_stained_hardened_clay.green.name=Lighter Green Stained Clay
+tile.lighter_stained_hardened_clay.red.name=Lighter Red Stained Clay
+tile.lighter_stained_hardened_clay.black.name=Lighter Black Stained Clay

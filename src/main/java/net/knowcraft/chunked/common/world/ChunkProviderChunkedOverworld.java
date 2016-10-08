@@ -68,7 +68,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     static final PropertyEnum<EnumDyeColor> DYE_COLOR_PROPERTY_ENUM = PropertyEnum.create("color", EnumDyeColor.class);
 
     // Zum Test ein Array mit Chunks, die normal generiert werden. Alle anderen Chunks werden leer sein.
-    private final int[][] AllowedChunks = {{0,0},{-2,2},{2,2},{-3,-1},{3,-2},{-2,-4},{4,-1},{1,5},{-4,5},{-3,-5},{5,3},{-3,6},{-6,2},{-6,-3},{2,-6},{6,-4},{3,7},{7,0}};
+    //private final int[][] AllowedChunks = {{0,0},{-2,2},{2,2},{-3,-1},{3,-2},{-2,-4},{4,-1},{1,5},{-4,5},{-3,-5},{5,3},{-3,6},{-6,2},{-6,-3},{2,-6},{6,-4},{3,7},{7,0}};
 
     public ChunkProviderChunkedOverworld(World worldIn, long seed, boolean mapFeaturesEnabledIn, String p_i46668_5_)
     {
@@ -296,12 +296,23 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
         int[] chunkCoord = {x, z};
         boolean isAllowedChunk = false;
 
+        /*
         for(int[] entry : AllowedChunks)
         {
             if(Arrays.equals(entry, chunkCoord)) {isAllowedChunk = true;}
         }
+        */
 
-        LogHelper.error("Die Koords: "+Arrays.toString(chunkCoord)+". Sind im Array: "+Arrays.asList(AllowedChunks).contains(chunkCoord));
+        // Bauen wir eine Funktion um zu bestimmen, ob ein Chunk generiert wird.
+        if ((x % 5) == 0 && (z % 5) == 0){isAllowedChunk = true;}
+        else if (((x+1) % 5) == 0 && (z % 5) == 0) {isAllowedChunk = true;}
+        else if ((x % 5) == 0 && ((z+1) % 5) == 0) {isAllowedChunk = true;}
+        else if (((x+1) % 5) == 0 && ((z+1) % 5) == 0) {isAllowedChunk = true;}
+        else if (Math.random() > 0.85d) {isAllowedChunk = true;}
+
+        if(Math.random() > 0.75d){isAllowedChunk = false;}
+
+        // LogHelper.error("Die Koords: "+Arrays.toString(chunkCoord)+". Sind im Array: "+Arrays.asList(AllowedChunks).contains(chunkCoord));
 
 
         if (isAllowedChunk) {

@@ -1,0 +1,35 @@
+{
+    "forge_marker": 1,
+    "defaults":
+    {
+        "textures":
+        {
+            // Endung _black sorgt dafür, dass die Item-Models schwarz sind. Die Blöcke sind weiter weiß.
+            "all": "minecraft:blocks/hardened_clay_stained_white"
+        },
+        "model": "cube_all"
+    },
+    "variants":
+    {
+        "inventory": { "model": "cube_all" },
+        "color":
+        {
+            "white": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_white"}},
+            "orange": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_orange"}},
+            "magenta": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_magenta"}},
+            "light_blue": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_light_blue"}},
+            "yellow": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_yellow"}},
+            "lime": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_lime"}},
+            "pink": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_pink"}},
+            "gray": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_gray"}},
+            "silver": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_silver"}},
+            "cyan": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_cyan"}},
+            "purple": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_purple"}},
+            "blue": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_blue"}},
+            "brown": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_brown"}},
+            "green": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_green"}},
+            "red": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_red"}},
+            "black": {"textures": {"all": "minecraft:blocks/hardened_clay_stained_black"}}
+        }
+    }
+}
