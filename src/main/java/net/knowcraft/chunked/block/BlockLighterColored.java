@@ -10,9 +10,14 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -53,6 +58,7 @@ public class BlockLighterColored extends BlockBase {
      * Gets the metadata of the item this Block can drop. This method is called when the block gets destroyed. It
      * returns the metadata of the dropped item based on the old metadata of the block.
      */
+    @Override
     public int damageDropped(IBlockState state)
     {
         return ((EnumDyeColor)state.getValue(COLOR)).getMetadata();
@@ -61,6 +67,7 @@ public class BlockLighterColored extends BlockBase {
     /**
      * returns a list of blocks with the same ID, but different meta (eg: wood returns 4 blocks)
      */
+    @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
     {
@@ -73,6 +80,7 @@ public class BlockLighterColored extends BlockBase {
     /**
      * Get the MapColor for this Block and the given BlockState
      */
+    @Override
     public MapColor getMapColor(IBlockState state)
     {
         return ((EnumDyeColor)state.getValue(COLOR)).getMapColor();
@@ -81,23 +89,41 @@ public class BlockLighterColored extends BlockBase {
     /**
      * Convert the given metadata into a BlockState for this Block
      */
+    @Override
     public IBlockState getStateFromMeta(int meta)
     {
         return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
     }
 
+    // Wahrscheinlich überflüssig, da die Super-Klasse das Selbe tut.
+    @Override
+    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+    {
+        // return this.getStateFromMeta(meta);
+        return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
+    }
+
+    /*
+    // Test, ob es überhaupt diesen Block mit einer anderen Farbe gibt. Test erfolgreich.
+    @Override
+    public void onBlockClicked(World worldIn, BlockPos pos, EntityPlayer playerIn)
+    {
+        worldIn.setBlockState(pos, this.getDefaultState().withProperty(COLOR, EnumDyeColor.BLACK));
+    }
+    */
+
     /**
      * Convert the BlockState into the correct metadata value
      */
+    @Override
     public int getMetaFromState(IBlockState state)
     {
         return ((EnumDyeColor)state.getValue(COLOR)).getMetadata();
     }
 
+    @Override
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, new IProperty[] {COLOR});
     }
-
-
 }

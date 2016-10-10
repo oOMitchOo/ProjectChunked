@@ -1,6 +1,5 @@
 package net.knowcraft.chunked;
 
-import net.knowcraft.chunked.client.ModCreativeTab;
 import net.knowcraft.chunked.common.world.WorldTypeChunked;
 import net.knowcraft.chunked.init.ModBlocks;
 import net.knowcraft.chunked.proxy.IProxy;
@@ -11,8 +10,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
-import java.util.Arrays;
 
 /**
  * Created by oOMitchOo on 03.10.2016.
@@ -33,7 +30,7 @@ public class Chunked {
     {
         new WorldTypeChunked();
 
-        ModBlocks.init();
+        ModBlocks.initAndRegister();
     }
 
     @EventHandler

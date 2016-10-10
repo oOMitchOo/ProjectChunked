@@ -2,6 +2,7 @@ package net.knowcraft.chunked.init;
 
 import net.knowcraft.chunked.block.BlockLighterColored;
 import net.knowcraft.chunked.helper.LogHelper;
+import net.knowcraft.chunked.item.ItemBlockColored;
 import net.knowcraft.chunked.item.ItemModelProvider;
 import net.knowcraft.chunked.reference.Reference;
 import net.minecraft.block.Block;
@@ -12,6 +13,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -24,33 +26,39 @@ public class ModBlocks
 
     public static BlockLighterColored LIGHTER_STAINED_HARDENED_CLAY;
 
-    public static void init()
+    public static void initAndRegister()
     {
-        LIGHTER_STAINED_HARDENED_CLAY = register(new BlockLighterColored("lighter_stained_hardened_clay"));
-
-
+        LIGHTER_STAINED_HARDENED_CLAY = register(new BlockLighterColored("lighter_stained_hardened_clay"), "lighter_stained_hardened_clay");
     }
 
-    private static <T extends Block> T register(T block, ItemBlock itemBlock)
+    private static <T extends Block> T register(T block, ItemBlock itemBlockC)
     {
         GameRegistry.register(block);
-        if (itemBlock != null) {
-            GameRegistry.register(itemBlock);
+
+        if (itemBlockC != null) {
+            GameRegistry.register(itemBlockC);
 
             if (block instanceof ItemModelProvider) {
-                ((ItemModelProvider)block).registerItemModel(itemBlock);
+                // In BlockBase um dann in ClientProxy die Methode aufzurufen.
+                ((ItemModelProvider)block).registerItemModel(itemBlockC);
             }
         }
         return block;
     }
 
-    private static <T extends Block> T register(T block)
+    private static <T extends Block> T register(T block, String name)
     {
+        ItemBlockColored itemBlockC = new ItemBlockColored(block, name);
+
+        /*
         ItemBlock itemBlock = new ItemBlock(block);
         // TÄST TÄST TÄST TÄST TÄST
         // OH WUNDER! Plötzlich gibt es Metadaten für die Blöcke!
         itemBlock.setHasSubtypes(true);
-        itemBlock.setRegistryName(block.getRegistryName());
-        return register(block, itemBlock);
+        itemBlock.setUnlocalizedName(name);
+        itemBlock.setRegistryName(name);
+        */
+
+        return register(block, itemBlockC);
     }
 }
