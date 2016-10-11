@@ -1,5 +1,6 @@
 package net.knowcraft.chunked.block;
 
+import net.knowcraft.chunked.reference.EnumOreType;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -9,7 +10,6 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -21,22 +21,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 /**
- * Created by oOMitchOo on 07.10.2016.
+ * Created by oOMitchOo on 10.10.2016.
  */
+public class BlockClayOre extends BlockBase{
+    private static final PropertyEnum<EnumOreType> ORETYPE = PropertyEnum.create("oretype", EnumOreType.class);
 
-// BlockColored überarbeiten für mehr Hardened_Clay Farben.
-public class BlockLighterColored extends BlockBase {
-
-    private static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
-
-    public BlockLighterColored(String name)
-    {
-        super(Material.ROCK, name);
+    public BlockClayOre(String registryName) {
+        super(Material.ROCK, registryName);
         this.setSoundType(SoundType.STONE);
         this.setHardness(1.25F);
         this.setResistance(7.0F);
 
-        this.setDefaultState(this.blockState.getBaseState().withProperty(COLOR, EnumDyeColor.WHITE));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(ORETYPE, EnumOreType.COAL));
     }
 
     /**
@@ -46,7 +42,7 @@ public class BlockLighterColored extends BlockBase {
     @Override
     public int damageDropped(IBlockState state)
     {
-        return ((EnumDyeColor)state.getValue(COLOR)).getMetadata();
+        return ((EnumOreType)state.getValue(ORETYPE)).getMetadata();
     }
 
     /**
@@ -56,9 +52,9 @@ public class BlockLighterColored extends BlockBase {
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
     {
-        for (EnumDyeColor enumdyecolor : EnumDyeColor.values())
+        for (EnumOreType enumoretype : EnumOreType.values())
         {
-            list.add(new ItemStack(itemIn, 1, enumdyecolor.getMetadata()));
+            list.add(new ItemStack(itemIn, 1, enumoretype.getMetadata()));
         }
     }
 
@@ -69,7 +65,7 @@ public class BlockLighterColored extends BlockBase {
     @Override
     public MapColor getMapColor(IBlockState state)
     {
-        return ((EnumDyeColor)state.getValue(COLOR)).getMapColor();
+        return ((EnumOreType)state.getValue(ORETYPE)).getMapColor();
     }
 
     /**
@@ -81,7 +77,7 @@ public class BlockLighterColored extends BlockBase {
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
+        return this.getDefaultState().withProperty(ORETYPE, EnumOreType.byMetadata(meta));
     }
 
     /**
@@ -92,9 +88,9 @@ public class BlockLighterColored extends BlockBase {
     @Override
     public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
-        // veraltet:
+        // veraltet ersetzt:
         // return this.getStateFromMeta(meta);
-        return this.getDefaultState().withProperty(COLOR, EnumDyeColor.byMetadata(meta));
+        return this.getDefaultState().withProperty(ORETYPE, EnumOreType.byMetadata(meta));
     }
 
     /**
@@ -103,12 +99,12 @@ public class BlockLighterColored extends BlockBase {
     @Override
     public int getMetaFromState(IBlockState state)
     {
-        return ((EnumDyeColor)state.getValue(COLOR)).getMetadata();
+        return ((EnumOreType)state.getValue(ORETYPE)).getMetadata();
     }
 
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, new IProperty[] {COLOR});
+        return new BlockStateContainer(this, new IProperty[] {ORETYPE});
     }
 }

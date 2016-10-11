@@ -49,7 +49,7 @@ public class WorldTypeChunked extends WorldType{
     public IChunkGenerator getChunkGenerator(@Nonnull World world, String generatorOptions) {
 
         // Muss noch herausfinden, wofür der String (hier "") steht.
-        // In einer flatword kann es z.B. "3;minecraft:air;" sein.
+        // In einer flatword kann es z.B. "3;minecraft:air;" sein um eine void world zu erschaffen.
         return new ChunkProviderChunkedOverworld(world, world.getSeed(), false, "");
     }
 }

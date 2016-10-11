@@ -1,0 +1,16 @@
+{
+  "forge_marker": 1,
+  "variants":
+  {
+    "oretype":
+    {
+      "gold": {"model": "chunked:clay_ore_gold"},
+      "iron": {"model": "chunked:clay_ore_iron"},
+      "coal": {"model": "chunked:clay_ore_coal"},
+      "lapis_lazuli": {"model": "chunked:clay_ore_lapis_lazuli"},
+      "diamond": {"model": "chunked:clay_ore_diamond"},
+      "redstone": {"model": "chunked:clay_ore_redstone"},
+      "emerald": {"model": "chunked:clay_ore_emerald"}
+    }
+  }
+}

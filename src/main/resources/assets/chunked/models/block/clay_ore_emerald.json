@@ -1,0 +1,6 @@
+{
+  "parent": "chunked:block/clay_ore",
+  "textures": {
+    "dotted": "blocks/emerald_block"
+  }
+}

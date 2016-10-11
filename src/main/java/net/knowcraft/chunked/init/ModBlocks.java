@@ -1,20 +1,12 @@
 package net.knowcraft.chunked.init;
 
+import net.knowcraft.chunked.block.BlockClayOre;
 import net.knowcraft.chunked.block.BlockLighterColored;
-import net.knowcraft.chunked.helper.LogHelper;
+import net.knowcraft.chunked.item.ItemBlockClayOre;
 import net.knowcraft.chunked.item.ItemBlockColored;
-import net.knowcraft.chunked.item.ItemModelProvider;
-import net.knowcraft.chunked.reference.Reference;
+import net.knowcraft.chunked.item.IItemModelProvider;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -22,43 +14,42 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
  */
 public class ModBlocks
 {
-    public static final PropertyEnum<EnumDyeColor> COLOR = PropertyEnum.<EnumDyeColor>create("color", EnumDyeColor.class);
-
     public static BlockLighterColored LIGHTER_STAINED_HARDENED_CLAY;
+    public static BlockClayOre CLAY_ORE;
 
     public static void initAndRegister()
     {
-        LIGHTER_STAINED_HARDENED_CLAY = register(new BlockLighterColored("lighter_stained_hardened_clay"), "lighter_stained_hardened_clay");
+        LIGHTER_STAINED_HARDENED_CLAY = registerColored(new BlockLighterColored("lighter_stained_hardened_clay"), "lighter_stained_hardened_clay");
+        CLAY_ORE = registerClayOre(new BlockClayOre("clay_ore"), "clay_ore");
     }
 
-    private static <T extends Block> T register(T block, ItemBlock itemBlockC)
+    private static <T extends Block> T register(T block, ItemBlock itemBlockColored)
     {
         GameRegistry.register(block);
 
-        if (itemBlockC != null) {
-            GameRegistry.register(itemBlockC);
+        if (itemBlockColored != null) {
+            GameRegistry.register(itemBlockColored);
 
-            if (block instanceof ItemModelProvider) {
+            if (block instanceof IItemModelProvider) {
                 // In BlockBase um dann in ClientProxy die Methode aufzurufen.
-                ((ItemModelProvider)block).registerItemModel(itemBlockC);
+                ((IItemModelProvider)block).registerItemModel(itemBlockColored);
             }
         }
         return block;
     }
 
-    private static <T extends Block> T register(T block, String name)
+    // Diese und nachfolgende Methode irgendwie zusammen schmeißen.
+    private static <T extends Block> T registerColored(T block, String name)
     {
-        ItemBlockColored itemBlockC = new ItemBlockColored(block, name);
+        ItemBlockColored itemBlockColored = new ItemBlockColored(block, name);
 
-        /*
-        ItemBlock itemBlock = new ItemBlock(block);
-        // TÄST TÄST TÄST TÄST TÄST
-        // OH WUNDER! Plötzlich gibt es Metadaten für die Blöcke!
-        itemBlock.setHasSubtypes(true);
-        itemBlock.setUnlocalizedName(name);
-        itemBlock.setRegistryName(name);
-        */
+        return register(block, itemBlockColored);
+    }
 
-        return register(block, itemBlockC);
+    private static <T extends Block> T registerClayOre(T block, String name)
+    {
+        ItemBlockClayOre itemBlockClayOre = new ItemBlockClayOre(block, name);
+
+        return register(block, itemBlockClayOre);
     }
 }

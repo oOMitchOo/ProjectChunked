@@ -1,19 +1,15 @@
 package net.knowcraft.chunked.item;
 
+import net.knowcraft.chunked.helper.LogHelper;
+import net.knowcraft.chunked.reference.EnumOreType;
 import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+
+import java.util.Collection;
 
 /**
  * Created by oOMitchOo on 10.10.2016.
@@ -30,8 +26,13 @@ public class ItemBlockColored extends ItemBlock {
     @Override
     public int getMetadata(int damage)
     {
-        if(damage >= 0 && damage < 16)return damage;
+        if (damage >= 0 && damage < 16) return damage;
         else return 0;
+        /*
+        if(this.getBlock().getBlockState().getProperties().contains(COLOR) && damage >= 0 && damage < 16){ return damage; }
+        else if(this.getBlock().getBlockState().getProperties().contains(ORETYPE) && damage >= 0 && damage < 7)return damage;
+        else return 0;
+        */
     }
 
     /**
@@ -41,5 +42,10 @@ public class ItemBlockColored extends ItemBlock {
     public String getUnlocalizedName(ItemStack stack)
     {
         return (this.block.getUnlocalizedName() + "." + EnumDyeColor.byMetadata(stack.getMetadata()));
+
+        /*if (this.getBlock().getBlockState().getProperties().contains(COLOR)) { return (this.block.getUnlocalizedName() + "." + EnumDyeColor.byMetadata(stack.getMetadata())); }
+        else if (this.getBlock().getBlockState().getProperties().contains(ORETYPE)) { return (this.block.getUnlocalizedName() + "." + EnumOreType.byMetadata(stack.getMetadata())); }
+        else return this.block.getUnlocalizedName(); */
     }
+
 }
