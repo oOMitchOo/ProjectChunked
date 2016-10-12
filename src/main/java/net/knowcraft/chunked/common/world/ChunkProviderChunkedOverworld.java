@@ -1,7 +1,7 @@
 package net.knowcraft.chunked.common.world;
 
 import net.knowcraft.chunked.helper.LogHelper;
-import net.minecraft.block.BlockFalling;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.IBlockState;
@@ -64,11 +64,9 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     double[] maxLimitRegion;
     double[] depthRegion;
 
-    // Für die Becher-Methode
+    // Für das ersetzen mit Clay-Blöcken
     static final PropertyEnum<EnumDyeColor> DYE_COLOR_PROPERTY_ENUM = PropertyEnum.create("color", EnumDyeColor.class);
 
-    // Zum Test ein Array mit Chunks, die normal generiert werden. Alle anderen Chunks werden leer sein.
-    //private final int[][] AllowedChunks = {{0,0},{-2,2},{2,2},{-3,-1},{3,-2},{-2,-4},{4,-1},{1,5},{-4,5},{-3,-5},{5,3},{-3,6},{-6,2},{-6,-3},{2,-6},{6,-4},{3,7},{7,0}};
 
     public ChunkProviderChunkedOverworld(World worldIn, long seed, boolean mapFeaturesEnabledIn, String p_i46668_5_)
     {
@@ -123,6 +121,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
         this.forestNoise = ctx.getForest();
     }
 
+    // x und z müssten die Chunk-Koordinaten von primer sein.
     public void setBlocksInChunk(int x, int z, ChunkPrimer primer)
     {
         this.biomesForGeneration = this.worldObj.getBiomeProvider().getBiomesForGeneration(this.biomesForGeneration, x * 4 - 2, z * 4 - 2, 10, 10);
@@ -211,79 +210,75 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     // Hiermit hoffentlich die Chunks in Clay-Becher setzen. Nicht aufgerufen.
     public void replaceChunkBoarderBlocks (ChunkPrimer primer)
     {
-
-        for(int i = 0; i < 2; ++i)
+        for(int x = 0; x < 2; ++x)
         {
-            for (int j = 0; j < 16; ++j)
+            for (int z = 0; z < 16; ++z)
             {
-
                 // y soll für die Höhe stehen (200 noch anpassen?)
                 for (int y = 0; y < 200; ++y)
                 {
-                    IBlockState iblockstate = primer.getBlockState(15*i, y, j);
+                    IBlockState iblockstate = primer.getBlockState(15*x, y, z);
                     if (iblockstate.getMaterial() != Material.AIR)
                     {
-                        if (iblockstate.getBlock() == Blocks.GRASS){
-                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.GREEN));
-                        } else if (iblockstate.getBlock() == Blocks.MYCELIUM) {
-                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.PURPLE));
-                        } else if (iblockstate.getBlock() == Blocks.DIRT) {
-                            primer.setBlockState(15*i, y, j, Blocks.HARDENED_CLAY.getDefaultState());
-                        } else if (iblockstate.getBlock() == Blocks.SAND || iblockstate.getBlock() == Blocks.SANDSTONE || iblockstate.getBlock() == Blocks.GRASS_PATH) {
-                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.YELLOW));
-                        } else if (iblockstate.getBlock() == Blocks.WATER || iblockstate.getBlock() == Blocks.FLOWING_WATER) {
-                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));
-                        } else if (iblockstate.getBlock() == Blocks.LAVA || iblockstate.getBlock() == Blocks.FLOWING_LAVA) {
-                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.RED));
+                        Block block = iblockstate.getBlock();
+
+                        if (block == Blocks.STONE) {
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
+                        } else if (block == Blocks.GRAVEL) {
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.SILVER));
+                        } else if (block == Blocks.WATER || block == Blocks.FLOWING_WATER) {
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));
+                        } else if (block == Blocks.DIRT) {
+                            primer.setBlockState(15*x, y, z, Blocks.HARDENED_CLAY.getDefaultState());
+                        } else if (block == Blocks.GRASS){
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.GREEN));
+                        } else if (block == Blocks.SAND || block == Blocks.SANDSTONE || block == Blocks.GRASS_PATH) {
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.YELLOW));
+                        } else if (block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) {
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.RED));
+                        } else if (block == Blocks.MYCELIUM) {
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.PURPLE));
                         } else {
-                            primer.setBlockState(15*i, y, j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
+                            primer.setBlockState(15*x, y, z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
                         }
                     }
-
-                    // Altes If-Argument ohne verschiedene Farben.
-                    /*
-                    if (iblockstate.getMaterial() != Material.AIR && iblockstate.getBlock() != Blocks.BEDROCK){primer.setBlockState(15*i, y, j,
-                            Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));}
-                    */
-
                 }
             }
         }
 
-        for(int i = 1; i < 15; ++i)
+        for(int x = 1; x < 15; ++x)
         {
-            for (int j = 0; j < 2; ++j)
+            for (int z = 0; z < 2; ++z)
             {
-
                 // y soll für die Höhe stehen (200 noch anpassen?)
                 for (int y = 0; y < 200; ++y)
                 {
-                    IBlockState iblockstate = primer.getBlockState(i, y, 15*j);
+                    IBlockState iblockstate = primer.getBlockState(x, y, 15*z);
 
                     if (iblockstate.getMaterial() != Material.AIR)
                     {
-                        if (iblockstate.getBlock() == Blocks.GRASS){
-                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.GREEN));
-                        } else if (iblockstate.getBlock() == Blocks.MYCELIUM) {
-                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.PURPLE));
-                        } else if (iblockstate.getBlock() == Blocks.DIRT) {
-                            primer.setBlockState(i, y, 15*j, Blocks.HARDENED_CLAY.getDefaultState());
-                        } else if (iblockstate.getBlock() == Blocks.SAND || iblockstate.getBlock() == Blocks.SANDSTONE || iblockstate.getBlock() == Blocks.GRASS_PATH) {
-                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.YELLOW));
-                        } else if (iblockstate.getBlock() == Blocks.WATER || iblockstate.getBlock() == Blocks.FLOWING_WATER) {
-                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));
-                        } else if (iblockstate.getBlock() == Blocks.LAVA || iblockstate.getBlock() == Blocks.FLOWING_LAVA) {
-                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.RED));
+                        Block block = iblockstate.getBlock();
+
+                        if (block == Blocks.STONE) {
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
+                        } else if (block == Blocks.GRAVEL) {
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.SILVER));
+                        } else if (block == Blocks.WATER || block == Blocks.FLOWING_WATER) {
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));
+                        } else if (block == Blocks.DIRT) {
+                            primer.setBlockState(x, y, 15*z, Blocks.HARDENED_CLAY.getDefaultState());
+                        } else if (block == Blocks.GRASS){
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.GREEN));
+                        } else if (block == Blocks.SAND || block == Blocks.SANDSTONE || block == Blocks.GRASS_PATH) {
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.YELLOW));
+                        } else if (block == Blocks.LAVA || block == Blocks.FLOWING_LAVA) {
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.RED));
+                        } else if (block == Blocks.MYCELIUM) {
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.PURPLE));
                         } else {
-                            primer.setBlockState(i, y, 15*j, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
+                            primer.setBlockState(x, y, 15*z, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.CYAN));
                         }
                     }
-
-                    // Altes If-Argument ohne verschiedene Farben.
-                    /*
-                    if (iblockstate.getMaterial() != Material.AIR && iblockstate.getBlock() != Blocks.BEDROCK){primer.setBlockState(15*i, y, j,
-                            Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(DYE_COLOR_PROPERTY_ENUM, EnumDyeColor.LIGHT_BLUE));}
-                    */
                 }
             }
         }
@@ -293,26 +288,16 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     {
         this.rand.setSeed((long)x * 341873128712L + (long)z * 132897987541L);
         ChunkPrimer chunkprimer = new ChunkPrimer();
-        int[] chunkCoord = {x, z};
         boolean isAllowedChunk = false;
 
-        /*
-        for(int[] entry : AllowedChunks)
-        {
-            if(Arrays.equals(entry, chunkCoord)) {isAllowedChunk = true;}
-        }
-        */
-
-        // Bauen wir eine Funktion um zu bestimmen, ob ein Chunk generiert wird.
+        // Die nächsten 7 Zeilen bestimmen welche Chunks nicht Void sind.
         if ((x % 5) == 0 && (z % 5) == 0){isAllowedChunk = true;}
         else if (((x+1) % 5) == 0 && (z % 5) == 0) {isAllowedChunk = true;}
         else if ((x % 5) == 0 && ((z+1) % 5) == 0) {isAllowedChunk = true;}
         else if (((x+1) % 5) == 0 && ((z+1) % 5) == 0) {isAllowedChunk = true;}
         else if (Math.random() > 0.85d) {isAllowedChunk = true;}
-
+        // Ein paar Chunks wieder löschen...
         if(Math.random() > 0.75d){isAllowedChunk = false;}
-
-        // LogHelper.error("Die Koords: "+Arrays.toString(chunkCoord)+". Sind im Array: "+Arrays.asList(AllowedChunks).contains(chunkCoord));
 
 
         if (isAllowedChunk) {
@@ -392,15 +377,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
                 }
             }
 
-
-            // Hier werden wohl Structures wie Mineshafts etc. generiert. (brauchen wir für den Void nicht)
-            /*
-            for (MapGenBase mapgenbase : this.structureGenerators)
-            {
-                mapgenbase.generate(this.worldObj, x, z, chunkprimer);
-            }
-            */
-
+            // TODO: Gucken, ob das hier in das erste if-Statement, das ausgegraute dahinter ins zweite sollte.
             // Hier werden wohl die Biome für den jeweiligen Chunk geholt. Overworld-Style
             Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
             Biome[] abiome = this.worldObj.getBiomeProvider().loadBlockGeneratorData((Biome[])null, x * 16, z * 16, 16, 16);
