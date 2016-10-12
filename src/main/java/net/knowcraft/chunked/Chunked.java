@@ -1,8 +1,11 @@
 package net.knowcraft.chunked;
 
+import net.knowcraft.chunked.common.world.ChunkedWorldEvents;
 import net.knowcraft.chunked.common.world.WorldTypeChunked;
 import net.knowcraft.chunked.init.ModBlocks;
 import net.knowcraft.chunked.proxy.IProxy;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.terraingen.WorldTypeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.knowcraft.chunked.reference.Reference;
@@ -17,6 +20,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION)
 public class Chunked {
+    WorldTypeChunked worldTypeChunked;
 
     @Mod.Instance(Reference.MOD_ID)
     public static Chunked instance;
@@ -28,7 +32,7 @@ public class Chunked {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        new WorldTypeChunked();
+        worldTypeChunked = new WorldTypeChunked();
 
         ModBlocks.initAndRegister();
     }
@@ -36,7 +40,7 @@ public class Chunked {
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-
+        MinecraftForge.TERRAIN_GEN_BUS.register(ChunkedWorldEvents.class);
         // MinecraftForge.EVENT_BUS.register(ChunkedWorldEvents.class);
     }
 
