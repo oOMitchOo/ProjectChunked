@@ -284,6 +284,60 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
         }
     }
 
+    private boolean doChunk(int x, int z) {
+        int range = 10;
+        double cutoff=0.5;
+        double sum=0;
+        double avg=0;
+        double std=0;
+
+        long seed=this.worldObj.getSeed();
+
+        double[] f = new double[(2*range+1)*(2*range+1)];
+
+        int a=0;
+
+        for (int i=x-range; i<x+range; i++)
+            for (int j=z-range; j<z+range; j++) {
+                a++;
+                f[a] = ChunkValue(i, j, seed);
+                sum+=f[a];
+            }
+
+        avg=sum/f.length;
+        sum=0;
+        a=0;
+
+        for (int i=x-range; i<x+range; i++)
+            for (int j=z-range; j<z+range; j++) {
+                a++;
+                sum+=(f[a] - avg)*(f[a] - avg);
+            }
+
+        std=Math.sqrt(sum/f.length);
+
+        return(ChunkValue(x,z,seed) > (avg+cutoff*std));
+        // return(true);
+    }
+
+    private double ChunkValue(int x, int z, long seed) {
+
+        double s=0;
+
+        double[] f = {13, 5, 7, 17, 3, 21, 18, 5, 81, 102};
+        double[] p = {(seed % 87), (seed % 12),(seed % 23),
+                (seed % 32), (seed % 80),
+                (seed % 13), (seed % 81),
+                (seed % 92), (seed % 11),
+                (seed % 74)
+        };
+
+        for (int i=0; i < f.length; i++)
+            s+= Math.sin(2*Math.PI*f[i]*(x+p[i]))+Math.sin(2*Math.PI*f[i]*(z+p[i]));
+
+        return(s);
+    }
+
     public Chunk provideChunk(int x, int z)
     {
         this.rand.setSeed((long)x * 341873128712L + (long)z * 132897987541L);
@@ -300,7 +354,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
         if(Math.random() > 0.75d){isAllowedChunk = false;}
 
 
-        if (isAllowedChunk) {
+        if (doChunk(x,z)) {
             // Alles ab hier in der Methode nur Aufrufen, wenn der Chunk wie eine normale Overworld generiert werden soll.
             this.setBlocksInChunk(x, z, chunkprimer);
 
