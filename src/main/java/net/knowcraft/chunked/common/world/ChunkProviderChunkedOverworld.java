@@ -264,7 +264,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     }
 
     private boolean doChunk(int x, int z) {
-        int range = 100;
+        int range = 30;
         double cutoff=1.05;
         double sum=0;
         double avg=0;
@@ -287,7 +287,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
         sum=0;
         a=0;
 
-        for (int i=x-range; i<x+range; i++)
+        for (int i=x-range; i<x+range; i+=3)
             for (int j=z-range; j<z+range; j++) {
                 a++;
                 sum+=(f[a] - avg)*(f[a] - avg);
