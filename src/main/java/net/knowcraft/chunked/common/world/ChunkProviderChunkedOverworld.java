@@ -217,6 +217,12 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
         if (!surroundingChunks[1]) replaceChunkSide(primer, "zDirect", 0); // neg. z-direction means blocks have chunk-coords 0 for z.
         if (!surroundingChunks[2]) replaceChunkSide(primer, "zDirect", 15); // pos. z-direction means blocks have chunk-coords 15 for z.
         if (!surroundingChunks[3]) replaceChunkSide(primer, "xDirect", 15); // pos. x-direction means blocks have chunk-coords 15 for x.
+
+        // Replace the chunk-corners
+        if (surroundingChunks[0] && surroundingChunks[1]) if (!doChunk(chunkX-1, chunkZ-1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 0, y, 0); // Corner in neg. x and neg. y direction.
+        if (surroundingChunks[0] && surroundingChunks[2]) if (!doChunk(chunkX-1, chunkZ+1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 0, y, 15); // Corner in neg. x and neg. y direction.
+        if (surroundingChunks[3] && surroundingChunks[1]) if (!doChunk(chunkX+1, chunkZ-1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 15, y, 0); // Corner in neg. x and neg. y direction.
+        if (surroundingChunks[3] && surroundingChunks[2]) if (!doChunk(chunkX+1, chunkZ+1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 15, y, 15); // Corner in neg. x and neg. y direction.
     }
 
     private void replaceChunkSide (ChunkPrimer primer, String direction, int same) {
