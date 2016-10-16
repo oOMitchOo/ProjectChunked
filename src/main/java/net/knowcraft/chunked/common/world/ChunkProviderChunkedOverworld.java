@@ -285,8 +285,8 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     }
 
     private boolean doChunk(int x, int z) {
-        int range = 10;
-        double cutoff=0.5;
+        int range = 100;
+        double cutoff=1.05;
         double sum=0;
         double avg=0;
         double std=0;
@@ -322,18 +322,33 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
 
     private double ChunkValue(int x, int z, long seed) {
 
+        double cluster=1.5;                   // Size of Chunks
+
         double s=0;
 
-        double[] f = {13, 5, 7, 17, 3, 21, 18, 5, 81, 102};
-        double[] p = {(seed % 87), (seed % 12),(seed % 23),
-                (seed % 32), (seed % 80),
-                (seed % 13), (seed % 81),
-                (seed % 92), (seed % 11),
-                (seed % 74)
+        double[] f = {  seed % 12,
+                        seed % 31,
+                        seed % 66,
+                        seed % 90,
+                        seed % 180
+        };
+        double[] p = {  (seed % 12)/12,
+                        (seed % 31)/31,
+                        (seed % 66)/66,
+                        (seed % 90)/90,
+                        (seed % 180)/180
         };
 
+        double t=(seed % 19)/19 + 0.1;
+
+        double a=Math.floor(x/cluster);
+        double b=Math.floor(z/cluster);
+
+
         for (int i=0; i < f.length; i++)
-            s+= Math.sin(2*Math.PI*f[i]*(x+p[i]))+Math.sin(2*Math.PI*f[i]*(z+p[i]));
+            s+= Math.sin(a*t*2*Math.PI) + Math.cos(b*t*2*Math.PI);
+
+        //System.out.println("x="+x+" z="+z+" s="+s);
 
         return(s);
     }
