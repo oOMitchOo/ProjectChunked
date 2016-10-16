@@ -208,7 +208,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     }
 
     // Hiermit hoffentlich die Chunks in Clay-Becher setzen. Nicht aufgerufen.
-    private void replaceChunkBoarderBlocks (ChunkPrimer primer, int chunkX, int chunkZ)
+    private void replaceChunkBorderBlocks (ChunkPrimer primer, int chunkX, int chunkZ)
     {
         boolean[] surroundingChunks = {doChunk(chunkX-1, chunkZ), doChunk(chunkX, chunkZ-1), doChunk(chunkX, chunkZ+1), doChunk(chunkX+1, chunkZ) };
 
@@ -237,7 +237,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
 
     private void replaceBlockWithClay (ChunkPrimer primer, int x, int y, int z) {
         IBlockState iblockstate = primer.getBlockState(x, y, z);
-        if (iblockstate.getMaterial() != Material.AIR)
+        if (iblockstate.getMaterial() != Material.AIR && iblockstate.getBlock() != Blocks.HARDENED_CLAY && iblockstate.getBlock() != Blocks.STAINED_HARDENED_CLAY)
         {
             Block block = iblockstate.getBlock();
 
@@ -396,7 +396,7 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
             }
 
             // Hier wird die Becher-Methode aufgerufen.
-            this.replaceChunkBoarderBlocks(chunkprimer, x, z);
+            this.replaceChunkBorderBlocks(chunkprimer, x, z);
 
             Chunk chunk = new Chunk(this.worldObj, chunkprimer, x, z);
             byte[] abyte = chunk.getBiomeArray();
