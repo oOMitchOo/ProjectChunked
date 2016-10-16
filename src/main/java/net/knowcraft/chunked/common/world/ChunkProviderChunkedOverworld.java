@@ -219,26 +219,23 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
         if (!surroundingChunks[3]) replaceChunkSide(primer, "xDirect", 15); // pos. x-direction means blocks have chunk-coords 15 for x.
 
         // Replace the chunk-corners
-        if (surroundingChunks[0] && surroundingChunks[1]) if (!doChunk(chunkX-1, chunkZ-1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 0, y, 0); // Corner in neg. x and neg. y direction.
-        if (surroundingChunks[0] && surroundingChunks[2]) if (!doChunk(chunkX-1, chunkZ+1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 0, y, 15); // Corner in neg. x and neg. y direction.
-        if (surroundingChunks[3] && surroundingChunks[1]) if (!doChunk(chunkX+1, chunkZ-1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 15, y, 0); // Corner in neg. x and neg. y direction.
-        if (surroundingChunks[3] && surroundingChunks[2]) if (!doChunk(chunkX+1, chunkZ+1)) for (int y = 0; y < 200; ++y) replaceBlockWithClay(primer, 15, y, 15); // Corner in neg. x and neg. y direction.
+        if (surroundingChunks[0] && surroundingChunks[1]) if (!doChunk(chunkX-1, chunkZ-1)) replaceColumnWithClay(primer, 0, 0); // Corner in neg. x and neg. y direction.
+        if (surroundingChunks[0] && surroundingChunks[2]) if (!doChunk(chunkX-1, chunkZ+1)) replaceColumnWithClay(primer, 0, 15); // Corner in neg. x and neg. y direction.
+        if (surroundingChunks[3] && surroundingChunks[1]) if (!doChunk(chunkX+1, chunkZ-1)) replaceColumnWithClay(primer, 15, 0); // Corner in neg. x and neg. y direction.
+        if (surroundingChunks[3] && surroundingChunks[2]) if (!doChunk(chunkX+1, chunkZ+1)) replaceColumnWithClay(primer, 15,15); // Corner in neg. x and neg. y direction.
     }
 
     private void replaceChunkSide (ChunkPrimer primer, String direction, int same) {
-        if (direction.equals("xDirect")) {
-            for (int y = 0; y < 200; ++y) {
-                for (int z = 0; z < 16; ++z) {
-                    replaceBlockWithClay(primer, same, y, z);
-                }
-            }
-        } else if (direction.equals("zDirect")) {
-            for (int y = 0; y < 200; ++y) {
-                for (int x = 0; x < 16; ++x) {
-                    replaceBlockWithClay(primer, x, y, same);
-                }
-            }
-        }
+        if (direction.equals("xDirect"))
+                for (int z = 0; z < 16; ++z)
+                    replaceColumnWithClay(primer, same, z);
+        else if (direction.equals("zDirect"))
+                for (int x = 0; x < 16; ++x)
+                    replaceColumnWithClay(primer, x, same);
+    }
+
+    private void replaceColumnWithClay (ChunkPrimer primer, int x, int z){
+        for (int y=0; y < 200; y++) replaceBlockWithClay(primer, x, y, z);
     }
 
     private void replaceBlockWithClay (ChunkPrimer primer, int x, int y, int z) {
