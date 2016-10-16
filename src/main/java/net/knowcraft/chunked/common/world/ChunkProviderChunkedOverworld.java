@@ -31,6 +31,7 @@ import java.util.Random;
 
 /**
  * Created by oOMitchOo on 04.10.2016.
+ * Some additions by sw
  */
 public class ChunkProviderChunkedOverworld implements IChunkGenerator
 {
@@ -303,11 +304,8 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
     }
 
     private double ChunkValue(int x, int z, long seed) {
-
         double cluster=1.5;                   // Size of Chunks
-
         double s=0;
-
         double[] f = {  seed % 12,
                         seed % 31,
                         seed % 66,
@@ -320,38 +318,19 @@ public class ChunkProviderChunkedOverworld implements IChunkGenerator
                         (seed % 90)/90,
                         (seed % 180)/180
         };
-
         double t=(seed % 19)/19 + 0.1;
-
         double a=Math.floor(x/cluster);
         double b=Math.floor(z/cluster);
 
-
         for (int i=0; i < f.length; i++)
             s+= Math.sin(a*t*2*Math.PI) + Math.cos(b*t*2*Math.PI);
-
-        //System.out.println("x="+x+" z="+z+" s="+s);
 
         return(s);
     }
 
     public Chunk provideChunk(int x, int z)
     {
-        this.rand.setSeed((long)x * 341873128712L + (long)z * 132897987541L);
         ChunkPrimer chunkprimer = new ChunkPrimer();
-        boolean isAllowedChunk = false;
-
-        // Die nächsten 7 Zeilen bestimmen welche Chunks nicht Void sind.
-        /* Alte ChunkedOverworld mit 2x2 Chunks in 3 Chunk Abständen.
-        if ((x % 5) == 0 && (z % 5) == 0){isAllowedChunk = true;}
-        else if (((x+1) % 5) == 0 && (z % 5) == 0) {isAllowedChunk = true;}
-        else if ((x % 5) == 0 && ((z+1) % 5) == 0) {isAllowedChunk = true;}
-        else if (((x+1) % 5) == 0 && ((z+1) % 5) == 0) {isAllowedChunk = true;}
-        else if (Math.random() > 0.85d) {isAllowedChunk = true;}
-        // Ein paar Chunks wieder löschen...
-        if(Math.random() > 0.75d){isAllowedChunk = false;}
-        */
-
 
         if (doChunk(x,z)) {
             // Alles ab hier in der Methode nur Aufrufen, wenn der Chunk wie eine normale Overworld generiert werden soll.
